@@ -1,0 +1,137 @@
+{
+  "labels_path": "data/processed/fivek_web_labels.csv",
+  "ridge": 0.15,
+  "val_ratio": 0.2,
+  "seed": 42,
+  "experts": {
+    "C": {
+      "num_rows": 200,
+      "num_train": 160,
+      "num_val": 40,
+      "train": {
+        "mae_mean": 10.603280067443848,
+        "mae_by_param": {
+          "exposure": 0.21126365661621094,
+          "contrast": 15.62440299987793,
+          "highlights": 18.274032592773438,
+          "shadows": 11.047163963317871,
+          "whites": 21.864582061767578,
+          "blacks": 7.233608245849609,
+          "temperature": 9.71579360961914,
+          "tint": 4.303132057189941,
+          "vibrance": 18.804710388183594,
+          "saturation": 16.04999351501465,
+          "sharpness": 3.461160659790039,
+          "noise_reduction": 0.649520754814148
+        },
+        "baseline_mae_mean": 16.172460556030273,
+        "improvement_pct_mean": 30.9984130859375
+      },
+      "val": {
+        "mae_mean": 12.505416870117188,
+        "mae_by_param": {
+          "exposure": 0.22773663699626923,
+          "contrast": 21.43467140197754,
+          "highlights": 20.553712844848633,
+          "shadows": 12.553658485412598,
+          "whites": 24.546154022216797,
+          "blacks": 6.772726535797119,
+          "temperature": 12.835348129272461,
+          "tint": 5.801639080047607,
+          "vibrance": 21.248714447021484,
+          "saturation": 18.753128051757812,
+          "sharpness": 4.175743103027344,
+          "noise_reduction": 1.1617786884307861
+        },
+        "baseline_mae_mean": 17.771146774291992,
+        "improvement_pct_mean": 28.306419372558594
+      }
+    },
+    "A": {
+      "num_rows": 200,
+      "num_train": 160,
+      "num_val": 40,
+      "train": {
+        "mae_mean": 11.948420524597168,
+        "mae_by_param": {
+          "exposure": 0.283017098903656,
+          "contrast": 17.3945369720459,
+          "highlights": 24.21021270751953,
+          "shadows": 13.742776870727539,
+          "whites": 29.01676368713379,
+          "blacks": 8.943774223327637,
+          "temperature": 7.448525905609131,
+          "tint": 3.5405890941619873,
+          "vibrance": 18.79244613647461,
+          "saturation": 15.912958145141602,
+          "sharpness": 3.4381260871887207,
+          "noise_reduction": 0.6573125123977661
+        },
+        "baseline_mae_mean": 16.123178482055664,
+        "improvement_pct_mean": 26.499059677124023
+      },
+      "val": {
+        "mae_mean": 13.100430488586426,
+        "mae_by_param": {
+          "exposure": 0.3173272907733917,
+          "contrast": 18.01207160949707,
+          "highlights": 23.12238311767578,
+          "shadows": 18.27592658996582,
+          "whites": 27.563512802124023,
+          "blacks": 11.366517066955566,
+          "temperature": 7.5624213218688965,
+          "tint": 3.410771131515503,
+          "vibrance": 22.97028923034668,
+          "saturation": 20.0376033782959,
+          "sharpness": 3.5885188579559326,
+          "noise_reduction": 0.9778493642807007
+        },
+        "baseline_mae_mean": 16.263120651245117,
+        "improvement_pct_mean": 23.803598403930664
+      }
+    },
+    "E": {
+      "num_rows": 200,
+      "num_train": 160,
+      "num_val": 40,
+      "train": {
+        "mae_mean": 10.843422889709473,
+        "mae_by_param": {
+          "exposure": 0.2135089933872223,
+          "contrast": 14.93989086151123,
+          "highlights": 17.569190979003906,
+          "shadows": 14.85876750946045,
+          "whites": 19.789844512939453,
+          "blacks": 11.19052791595459,
+          "temperature": 11.310492515563965,
+          "tint": 5.383741855621338,
+          "vibrance": 16.353212356567383,
+          "saturation": 14.064480781555176,
+          "sharpness": 3.653273105621338,
+          "noise_reduction": 0.7941403985023499
+        },
+        "baseline_mae_mean": 16.989290237426758,
+        "improvement_pct_mean": 30.803361892700195
+      },
+      "val": {
+        "mae_mean": 11.363468170166016,
+        "mae_by_param": {
+          "exposure": 0.21697893738746643,
+          "contrast": 15.903767585754395,
+          "highlights": 17.211627960205078,
+          "shadows": 16.599849700927734,
+          "whites": 19.53211784362793,
+          "blacks": 13.582806587219238,
+          "temperature": 11.424674987792969,
+          "tint": 5.438470363616943,
+          "vibrance": 16.72024154663086,
+          "saturation": 14.817216873168945,
+          "sharpness": 3.7271885871887207,
+          "noise_reduction": 1.186672329902649
+        },
+        "baseline_mae_mean": 17.562082290649414,
+        "improvement_pct_mean": 31.290145874023438
+      }
+    }
+  }
+}

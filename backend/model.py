@@ -43,6 +43,14 @@ def recommend_params(img: Image.Image, condition: str = "model_based") -> list[d
     return []  # manual condition: no suggestions
 
 
+def model_status() -> dict[str, object]:
+    linear_models = _load_linear_models()
+    return {
+        "trained_weights_loaded": bool(linear_models),
+        "styles": [spec["name"] for spec in linear_models] if linear_models else [],
+    }
+
+
 # ── Rule-based (always works) ─────────────────────────────────────────────────
 
 def _rule_based(img: Image.Image) -> list[dict]:
@@ -119,8 +127,8 @@ def _model_inference(img: Image.Image) -> list[dict]:
     if linear_models:
         features = _feature_vector(stats)
         return [
-            _candidate(name, dict(zip(PARAM_KEYS, features @ weights)))
-            for name, weights in linear_models
+            _candidate(spec["name"], dict(zip(PARAM_KEYS, _predict_linear(spec, features))))
+            for spec in linear_models
         ]
 
     exposure_fix = np.clip((0.50 - stats["brightness"]) * 2.2, -0.9, 0.9)
@@ -227,7 +235,7 @@ def _feature_vector(stats: dict[str, float]) -> np.ndarray:
 
 
 @lru_cache(maxsize=1)
-def _load_linear_models() -> tuple[tuple[str, np.ndarray], ...]:
+def _load_linear_models() -> tuple[dict[str, np.ndarray | str], ...]:
     weights_dir = Path(__file__).resolve().parent / "weights"
     specs = [
         ("Natural", "expertC_linear.npz"),
@@ -239,9 +247,26 @@ def _load_linear_models() -> tuple[tuple[str, np.ndarray], ...]:
         path = weights_dir / filename
         if not path.exists():
             return ()
-        data = np.load(path)
-        models.append((name, data["weights"].astype(np.float32)))
+        data = np.load(path, allow_pickle=False)
+        model = {
+            "name": name,
+            "weights": data["weights"].astype(np.float32),
+            "feature_mean": data["feature_mean"].astype(np.float32) if "feature_mean" in data else np.zeros(11, dtype=np.float32),
+            "feature_std": data["feature_std"].astype(np.float32) if "feature_std" in data else np.ones(11, dtype=np.float32),
+        }
+        models.append(model)
     return tuple(models)
+
+
+def _predict_linear(spec: dict[str, np.ndarray | str], features: np.ndarray) -> np.ndarray:
+    weights = spec["weights"]
+    mean = spec["feature_mean"]
+    std = spec["feature_std"]
+    if not isinstance(weights, np.ndarray) or not isinstance(mean, np.ndarray) or not isinstance(std, np.ndarray):
+        raise TypeError("Invalid linear model format")
+    std = np.where(std < 1e-6, 1.0, std)
+    normalized = (features - mean) / std
+    return normalized @ weights
 
 
 def _candidate(name: str, params: dict) -> dict:

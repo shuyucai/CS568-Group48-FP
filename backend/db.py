@@ -3,7 +3,7 @@ import sqlite3
 import time
 from pathlib import Path
 
-DB_PATH = Path("phototune.db")
+DB_PATH = Path(__file__).resolve().parent / "phototune.db"
 
 
 def init_db():

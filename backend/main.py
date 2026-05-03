@@ -8,12 +8,18 @@ from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from pydantic import BaseModel
 
-from db import init_db, log_event
-from image_processing import apply_params
-from model import PARAM_RANGES, recommend_params
+try:
+    from .db import init_db, log_event
+    from .image_processing import apply_params
+    from .model import PARAM_RANGES, model_status, recommend_params
+except ImportError:
+    from db import init_db, log_event
+    from image_processing import apply_params
+    from model import PARAM_RANGES, model_status, recommend_params
 
-UPLOAD_DIR = Path("uploads")
-RESULT_DIR = Path("results")
+BASE_DIR = Path(__file__).resolve().parent
+UPLOAD_DIR = BASE_DIR / "uploads"
+RESULT_DIR = BASE_DIR / "results"
 UPLOAD_DIR.mkdir(exist_ok=True)
 RESULT_DIR.mkdir(exist_ok=True)
 
@@ -26,13 +32,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-app.mount("/results", StaticFiles(directory="results"), name="results")
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
+app.mount("/results", StaticFiles(directory=str(RESULT_DIR)), name="results")
 
 
 @app.on_event("startup")
 def startup():
     init_db()
+
+
+@app.get("/api/health")
+def health():
+    return {"ok": True, **model_status()}
 
 
 # ── Upload ────────────────────────────────────────────────────────────────────

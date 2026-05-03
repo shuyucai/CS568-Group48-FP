@@ -3,3 +3,30 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 backend/results/*
 !backend/results/.gitkeep
+
+# macOS / editor
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Frontend build/deps
+frontend/node_modules/
+frontend/dist/
+
+# Local runtime artifacts
+*.log
+backend/__pycache__/
+scripts/__pycache__/
+
+# Backend generated media/db (keep source code clean)
+backend/results/
+backend/uploads/
+backend/phototune.db
+
+# Raw downloaded training data (very large)
+data/fivek_web/
+
+# Optional incremental trainer state
+backend/weights/incremental_state.npz
