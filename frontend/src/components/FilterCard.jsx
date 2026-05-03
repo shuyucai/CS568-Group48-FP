@@ -16,7 +16,7 @@ export default function FilterCard({ candidate, originalUrl, selected, intensity
   return (
     <div
       onClick={onSelect}
-      className={`cursor-pointer rounded-xl overflow-hidden border-2 transition-all
+      className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all
         ${selected ? "border-blue-500 shadow-lg shadow-blue-500/20" : "border-gray-700 hover:border-gray-500"}`}
     >
       {/* Thumbnail */}

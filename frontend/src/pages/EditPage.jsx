@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import FilterCard from "../components/FilterCard";
-import { applyParams, batchApply } from "../api";
+import { applyParams, batchApply, sendFeedback } from "../api";
 import { renderPreview } from "../utils/canvasPreview";
 
 // ─── Param definitions ───────────────────────────────────────────────────────
@@ -366,7 +366,7 @@ export default function EditPage({ images, sessionId, condition, candidates, set
   const hasPreview    = isManual || selectedFilterIdx !== null;
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8 flex flex-col gap-6">
+    <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col gap-6">
 
       {/* ── Top bar ── */}
       <div className="flex items-center justify-between">

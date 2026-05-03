@@ -10,7 +10,7 @@ from pydantic import BaseModel
 
 from db import init_db, log_event
 from image_processing import apply_params
-from model import recommend_params
+from model import PARAM_RANGES, recommend_params
 
 UPLOAD_DIR = Path("uploads")
 RESULT_DIR = Path("results")
@@ -130,7 +130,8 @@ def feedback(req: FeedbackRequest):
 
     new_params = {**req.params}
     for k, v in delta.items():
-        new_params[k] = new_params.get(k, 0) + v
+        low, high = PARAM_RANGES.get(k, (-100, 100))
+        new_params[k] = max(low, min(high, new_params.get(k, 0) + v))
 
     if req.session_id:
         log_event(req.session_id, req.image_id, "feedback", {
