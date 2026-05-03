@@ -82,17 +82,6 @@ function sharpnessCss(params) {
   return nr > 0 ? `blur(${nr.toFixed(2)}px)` : "none";
 }
 
-/** Lightweight CSS filter for scroll-strip thumbnails (no canvas needed). */
-function cssFilterString(params) {
-  const brightness = Math.pow(2, (params.exposure ?? 0)).toFixed(3);
-  const contrast   = (1 + (params.contrast   ?? 0) / 100).toFixed(3);
-  const saturate   = Math.max(0, 1 + (params.saturation ?? 0) / 100).toFixed(3);
-  const temp       = params.temperature ?? 0;
-  const sepia      = Math.min(1, Math.abs(temp) / 500).toFixed(3);
-  const hue        = ((temp > 0 ? -3 : 3) * Math.abs(temp / 100)).toFixed(1);
-  return `brightness(${brightness}) contrast(${contrast}) saturate(${saturate}) sepia(${sepia}) hue-rotate(${hue}deg)`;
-}
-
 async function fetchBlob(url) {
   const r = await fetch(url);
   return r.blob();
@@ -115,6 +104,37 @@ async function buildZip(entries) {
 
 // ─── ② Scroll Preview Strip ──────────────────────────────────────────────────
 
+// Renders a thumbnail via the same Canvas pipeline as the main preview.
+// Caches the blob by (src + JSON params) — only re-renders when params change.
+function ThumbCanvas({ src, params, className }) {
+  const [blobUrl, setBlobUrl] = useState(null);
+  const cacheKeyRef = useRef(null);
+  const prevBlobRef = useRef(null);
+
+  useEffect(() => {
+    const key = src + JSON.stringify(params);
+    if (cacheKeyRef.current === key) return;
+    cacheKeyRef.current = key;
+    let cancelled = false;
+    renderPreview(src, params).then((url) => {
+      if (cancelled) { URL.revokeObjectURL(url); return; }
+      if (prevBlobRef.current) URL.revokeObjectURL(prevBlobRef.current);
+      prevBlobRef.current = url;
+      setBlobUrl(url);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [src, params]);
+
+  return (
+    <img
+      src={blobUrl ?? src}
+      alt=""
+      className={className}
+      style={{ opacity: blobUrl ? 1 : 0.5, transition: "opacity 0.15s" }}
+    />
+  );
+}
+
 function ScrollPreview({ images, activeIdx, getParams, onSelect, perImageDelta }) {
   return (
     <div className="flex gap-3 overflow-x-auto pb-2 px-0.5" style={{ scrollbarWidth: "thin" }}>
@@ -130,11 +150,10 @@ function ScrollPreview({ images, activeIdx, getParams, onSelect, perImageDelta }
                 : "border-gray-700 hover:border-gray-500"
             }`}
           >
-            <img
+            <ThumbCanvas
               src={img.url}
-              alt={`Photo ${i + 1}`}
+              params={getParams(i)}
               className="w-40 h-28 object-cover block"
-              style={{ filter: cssFilterString(getParams(i)) }}
             />
             {/* orange dot = per-image custom adjustments exist */}
             {hasCustom && (
