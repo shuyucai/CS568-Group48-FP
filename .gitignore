@@ -1,3 +1,5 @@
 backend/.venv/
 backend/uploads/*
 !backend/uploads/.gitkeep
+backend/results/*
+!backend/results/.gitkeep
